@@ -1,0 +1,15 @@
+{
+  "name": "video-editing-remotion",
+  "private": true,
+  "scripts": {
+    "studio": "remotion studio",
+    "render": "remotion render"
+  },
+  "dependencies": {
+    "@remotion/captions": "^4.0.539",
+    "@remotion/cli": "^4.0.539",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "remotion": "^4.0.539"
+  }
+}
