@@ -5,9 +5,22 @@ Writes JSON in Remotion's Caption shape: [{text, startMs, endMs, timestampMs, co
 """
 import argparse
 import json
+import subprocess
 import sys
 
+import numpy as np
 from faster_whisper import WhisperModel
+
+
+def load_audio(path):
+    # Decode with the ffmpeg CLI rather than PyAV, whose newer releases break faster-whisper.
+    raw = subprocess.run(
+        ["ffmpeg", "-nostdin", "-loglevel", "error", "-i", path,
+         "-f", "f32le", "-ac", "1", "-ar", "16000", "-"],
+        check=True, capture_output=True,
+    ).stdout
+    return np.frombuffer(raw, np.float32)
+
 
 p = argparse.ArgumentParser()
 p.add_argument("input")
@@ -17,7 +30,7 @@ p.add_argument("--language", default=None)
 args = p.parse_args()
 
 model = WhisperModel(args.model, device="cpu", compute_type="int8")
-segments, info = model.transcribe(args.input, word_timestamps=True, language=args.language)
+segments, info = model.transcribe(load_audio(args.input),word_timestamps=True, language=args.language)
 
 captions = []
 for seg in segments:
