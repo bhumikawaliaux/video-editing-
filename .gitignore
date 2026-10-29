@@ -4,3 +4,4 @@ remotion/out/
 *.mov
 *.wav
 *.m4a
+__pycache__/
